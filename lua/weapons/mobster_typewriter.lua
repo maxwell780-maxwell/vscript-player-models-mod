@@ -8,7 +8,7 @@ SWEP.AdminOnly = false
 SWEP.Base = "weapon_base"
 SWEP.Category = "maxwells Vscript swep"
 
-SWEP.ViewModel = "models/vip_mobster/weapons/v_typewriter.mdl"
+SWEP.ViewModel = "models/vip_mobster/weapons/v_typewriter_augmented.mdl"
 SWEP.WorldModel = "models/vip_mobster/weapons/w_typewriter.mdl"
 SWEP.UseHands = true
 SWEP.HoldType = "ar2"
@@ -49,10 +49,35 @@ SWEP.ReloadSound = Sound("vip_mobster_emergent_r1b/typewriter_reload.mp3")
 SWEP.Reloadnormal = Sound("weapons/short_stop_reload.wav")
 SWEP.Shovenormal = Sound("weapons/push.wav")
 
+
 SWEP.IsReloading = false
 SWEP.IsShoving = false
 SWEP.IsInspecting = false
 SWEP.HasPlayedInspectStart = false
+
+
+function SWEP:DrawWorldModel()
+    local ply = self:GetOwner()
+    if IsValid(ply) then
+        local bone = ply:LookupBone("ValveBiped.Bip01_R_Hand")
+        if bone then
+            local pos, ang = ply:GetBonePosition(bone)
+
+            -- Adjust these until it fits right
+            ang:RotateAroundAxis(ang:Right(), 180)
+            pos = pos + ang:Forward() * 4
+            pos = pos + ang:Right() * 1
+            pos = pos + ang:Up() * -1
+
+            self:SetRenderOrigin(pos)
+            self:SetRenderAngles(ang)
+            self:DrawModel()
+            return
+        end
+    end
+    self:DrawModel()
+end
+
 
 function SWEP:Initialize()
     self:SetHoldType(self.HoldType)
@@ -89,14 +114,19 @@ function SWEP:PrimaryAttack()
         self:CheckDryFireSound()
         return
     end
-
+	
+    if self.IsReloading then return end
+	
     self:SetNextPrimaryFire(CurTime() + 0.1)
 
     local isCrit = math.random() < 0.1
     local isLow = self:Clip1() <= 10
-    local sndTbl = isCrit and (isLow and self.Primary.Sounds_LowCrit or self.Primary.Sounds_Crit)
+    local sndTbl =
+        isCrit and (isLow and self.Primary.Sounds_LowCrit or self.Primary.Sounds_Crit)
         or (isLow and self.Primary.Sounds_Low or self.Primary.Sounds_Normal)
 
+
+	
     local index = math.random(1, #sndTbl)
     self:EmitSound(sndTbl[index])
 
@@ -107,6 +137,7 @@ function SWEP:PrimaryAttack()
 
     self:ShootBullet(damage, 1, 0.01)
     self:TakePrimaryAmmo(1)
+
 
     timer.Simple(self:SequenceDuration(), function()
         if IsValid(self) then self:SendViewModelAnim("idle") end
@@ -140,6 +171,7 @@ function SWEP:SecondaryAttack()
     local vm = self:GetOwner():GetViewModel()
     local shoveDuration = vm and vm:SequenceDuration(vm:LookupSequence(anim)) or 5.8
 
+
     timer.Simple(shoveDuration, function()
         if IsValid(self) then
             self.IsShoving = false
@@ -153,44 +185,72 @@ function SWEP:Reload()
     if self:Clip1() >= self.Primary.ClipSize then return end
     if self:Ammo1() <= 0 then return end
     if self.IsReloading then return end
-    
+
     self.IsReloading = true
-    self:EmitSound(self.Reloadnormal)
-    
-    local vm = self:GetOwner():GetViewModel()
-    local seq = vm and vm:LookupSequence("reload") or -1
-    local reloadTime = (seq >= 0 and vm:SequenceDuration(seq)) or 2.0
-    
-    -- Force the reload animation and lock it
-    if IsValid(vm) then
-        vm:SendViewModelMatchingSequence(seq)
-        vm:SetPlaybackRate(1.0)
-        vm:SetCycle(0)
-        -- Lock the animation by setting a high cycle rate
-        vm:SetSequence(seq)
-    end
-    
-    self:DefaultReload(ACT_VM_RELOAD)
-    
-    local soundDelay = 0.6
-    timer.Simple(soundDelay, function()
+
+    local owner = self:GetOwner()
+    local vm = owner:GetViewModel()
+    if not IsValid(vm) then return end
+
+    ----------------------------------------------------
+    -- PLAY FIRST LAYER (mechanical rattle)
+    ----------------------------------------------------
+    self:EmitSound(self.Reloadnormal, 80, 100, 1, CHAN_ITEM)
+	self:DefaultReload(ACT_VM_RELOAD)
+    ----------------------------------------------------
+    -- SETUP SLOW RELOAD ANIMATION
+    ----------------------------------------------------
+    local reloadSeq = vm:LookupSequence("reload")
+    if reloadSeq < 0 then reloadSeq = 0 end
+
+    vm:SendViewModelMatchingSequence(reloadSeq)
+    vm:SetPlaybackRate(1)
+    vm:SetCycle(0)
+
+    local reloadTime = vm:SequenceDuration() / 1 -- its gonna be used once i figure out a way to add slow reload animations which will take forever but i dont give f*ck
+
+
+
+    ----------------------------------------------------
+    -- PLAY SECOND SOUND LAYER (the MP3 reload)
+    ----------------------------------------------------
+    timer.Simple(0.6, function()
         if IsValid(self) and self.IsReloading then
-            self:EmitSound(self.ReloadSound)
+            self:EmitSound(self.ReloadSound, 80, 100, 1, CHAN_WEAPON)
         end
     end)
-    
-    timer.Simple(reloadTime, function()
-        if IsValid(self) then
-            self.IsReloading = false
-            -- Now safely return to idle
-            if IsValid(vm) then
-                local idleSeq = vm:LookupSequence("idle")
-                vm:SendViewModelMatchingSequence(idleSeq)
-                vm:SetPlaybackRate(1.0)
-            end
+
+
+
+    ----------------------------------------------------
+    -- WHEN THE ANIMATION FINISHES → GIVE AMMO
+    ----------------------------------------------------
+    timer.Simple(reloadTime + 0.1, function()
+        if not IsValid(self) then return end
+        if not IsValid(owner) then return end
+
+        self.IsReloading = false
+
+        -- CALCULATE AMMO TO RESTORE
+        local needed = self.Primary.ClipSize - self:Clip1()
+        local available = owner:GetAmmoCount(self.Primary.Ammo)
+        local toLoad = math.min(needed, available)
+
+        -- FILL THE CLIP
+        self:SetClip1(self:Clip1() + toLoad)
+        owner:RemoveAmmo(toLoad, self.Primary.Ammo)
+
+        ------------------------------------------------
+        -- RETURN TO IDLE ANIMATION
+        ------------------------------------------------
+        if IsValid(vm) then
+            local idle = vm:LookupSequence("idle")
+            vm:SendViewModelMatchingSequence(idle)
+            vm:SetPlaybackRate(1)
         end
     end)
 end
+
 
 function SWEP:Think()
     local ply = self:GetOwner()
@@ -233,7 +293,7 @@ function SWEP:Think()
         elseif not holdingInspect and self.IsInspecting then
             self.IsInspecting = false
             self:SendViewModelAnim("inspect_end")
-                        
+
             local vm = ply:GetViewModel()
             local dur = vm and vm:SequenceDuration(vm:LookupSequence("inspect_end")) or 1.5
                         
@@ -258,20 +318,25 @@ end
 function SWEP:ShootBullet(damage, num_bullets, aimcone)
     local owner = self:GetOwner()
     local bullet = {}
-    bullet.Num = num_bullets
-    bullet.Src = owner:GetShootPos()
-    bullet.Dir = owner:GetAimVector()
-    bullet.Spread = Vector(aimcone, aimcone, 0)
-    bullet.Tracer = 1
-    bullet.TracerName = "Tracer"
-    bullet.Force = damage * 0.5
-    bullet.Damage = damage
-    bullet.AmmoType = self.Primary.Ammo
+
+    bullet.Num       = 3  -- always fire 3 bullets
+    bullet.Src       = owner:GetShootPos()
+    bullet.Dir       = owner:GetAimVector()
+
+    -- small spread boost (adjust to taste)
+    bullet.Spread    = Vector(aimcone * 5.5, aimcone * 5.5, 0)
+
+    bullet.Tracer    = 1
+    bullet.TracerName= "Tracer"
+    bullet.Force     = damage * 0.5
+    bullet.Damage    = damage
+    bullet.AmmoType  = self.Primary.Ammo
 
     owner:FireBullets(bullet)
     owner:MuzzleFlash()
     owner:SetAnimation(PLAYER_ATTACK1)
 end
+
 
 function SWEP:SendViewModelAnim(anim)
     -- Block idle animations during reload
@@ -301,4 +366,22 @@ function SWEP:CheckDryFireSound()
         self.PlayedNoAmmoSound = false
     end
 end
+
+
+-- if SERVER then
+ --   local att = self:LookupAttachment("muzzle")
+ --   if att and att > 0 then
+      --  local attData = self:GetAttachment(att)
+       -- if attData then
+            -- Attach the particle normally
+        --    local effect = ParticleEffectAttach("muzzle_bignasty", PATTACH_POINT_FOLLOW, self, att)
+
+            -- If you want it to face forward, use a control point to rotate it
+            -- CP 0 is usually the origin; adjust angles as needed
+        --    if effect then
+        --        effect:SetControlPointOrientation(0, attData.Pos, (attData.Ang + Angle(0, 79.224, 0)):Forward(), Vector(0,0,1))
+      --      end
+     --   end
+  --  end
+-- end
 
