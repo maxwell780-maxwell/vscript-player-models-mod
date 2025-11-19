@@ -28,12 +28,12 @@ SWEP.Secondary.Ammo = "none"
 
 SWEP.Inspecting = false
 
-local HIT_SOUNDS = { -- THIS WILL CHANGE SOMEWHERE IDK
+local HIT_SOUNDS = {
     "weapons/cbar_hitbod1.wav",
     "weapons/cbar_hitbod2.wav",
     "weapons/cbar_hitbod3.wav"
 }
-local HIT_WORLD_SOUNDS = {
+local HIT_WORLD_SOUNDS = { -- THIS WILL CHANGE SOMEWHERE IDK
     "weapons/cbar_hit1.wav",
     "weapons/cbar_hit2.wav"
 }
@@ -251,3 +251,4 @@ function SWEP:Equip()
         end
     end)
 end
+
