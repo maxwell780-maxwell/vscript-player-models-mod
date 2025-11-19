@@ -1,3 +1,7 @@
+if SERVER then
+    util.AddNetworkString("PlayerFiredSWEP")
+end
+
 SWEP.PrintName = "Typewriter"
 SWEP.Author = "Code Copilot & maxwell"
 SWEP.Instructions = "press primary fire to shoot duh hold H to inspect weapon press secondary fire to SHOVE"
@@ -116,7 +120,13 @@ function SWEP:PrimaryAttack()
     end
 	
     if self.IsReloading then return end
-	
+
+	if SERVER then
+		net.Start("PlayerFiredSWEP")
+		net.Send(self:GetOwner())
+	end
+
+
     self:SetNextPrimaryFire(CurTime() + 0.1)
 
     local isCrit = math.random() < 0.1
@@ -149,6 +159,12 @@ function SWEP:SecondaryAttack()
     if self:GetNextSecondaryFire() > CurTime() then return end
 	
     self:EmitSound(self.Shovenormal)
+
+	if SERVER then
+		net.Start("PlayerFiredSWEP")
+		net.Send(self:GetOwner())
+	end
+
 
     self.IsShoving = true
     local anim = math.random(1, 2) == 1 and "shove" or "shove2"
