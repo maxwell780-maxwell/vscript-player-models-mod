@@ -28,7 +28,7 @@ SWEP.Secondary.Ammo = "none"
 
 SWEP.Inspecting = false
 
-local HIT_SOUNDS = {
+local HIT_SOUNDS = { -- THIS WILL CHANGE SOMEWHERE IDK
     "weapons/cbar_hitbod1.wav",
     "weapons/cbar_hitbod2.wav",
     "weapons/cbar_hitbod3.wav"
@@ -39,6 +39,29 @@ local HIT_WORLD_SOUNDS = {
 }
 local SWING_SOUND = "weapons/cbar_miss1.wav"
 local SWING_SOUND_CRIT = "weapons/cbar_miss1_crit.wav"
+
+function SWEP:DrawWorldModel()
+    local ply = self:GetOwner()
+    if IsValid(ply) then
+        local bone = ply:LookupBone("ValveBiped.Bip01_R_Hand")
+        if bone then
+            local pos, ang = ply:GetBonePosition(bone)
+
+            -- Adjust these until it fits right
+            ang:RotateAroundAxis(ang:Right(), 180)
+            pos = pos + ang:Forward() * 4
+            pos = pos + ang:Right() * 1
+            pos = pos + ang:Up() * -1
+
+            self:SetRenderOrigin(pos)
+            self:SetRenderAngles(ang)
+            self:DrawModel()
+            return
+        end
+    end
+    self:DrawModel()
+end
+
 
 function SWEP:Initialize()
     self:SetHoldType(self.HoldType)
@@ -77,6 +100,11 @@ end
 function SWEP:PrimaryAttack()
     self:SetNextPrimaryFire(CurTime() + 0.5)
     self:GetOwner():SetAnimation(PLAYER_ATTACK1)
+	
+	if SERVER then
+		net.Start("PlayerFiredSWEP")
+		net.Send(self:GetOwner())
+	end
 
     local anim = math.random(1, 3)
     self:SendViewModelAnim("pipe_attack" .. (anim == 1 and "" or anim))
@@ -151,7 +179,10 @@ function SWEP:Think()
 end
 
 function SWEP:SendViewModelAnim(anim)
-    local vm = self:GetOwner():GetViewModel()
+    local owner = self:GetOwner()
+    if not IsValid(owner) or not owner:IsPlayer() then return end
+
+    local vm = owner:GetViewModel()
     if not IsValid(vm) then return end
 
     local seq = vm:LookupSequence(anim)
@@ -189,7 +220,10 @@ function SWEP:AddKillCount()
 end
 
 function SWEP:UpdatePipeBodygroup()
-    local vm = self:GetOwner():GetViewModel()
+    local owner = self:GetOwner()
+    if not IsValid(owner) or not owner:IsPlayer() then return end
+
+    local vm = owner:GetViewModel()
     if not IsValid(vm) then return end
 
     local group = 0
@@ -198,6 +232,7 @@ function SWEP:UpdatePipeBodygroup()
     elseif self.KillCount >= 13 then
         group = 1
     end
+
     vm:SetBodygroup(0, group) -- Assuming bodygroup index is 0
 end
 
