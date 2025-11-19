@@ -67,6 +67,11 @@ if SERVER then
     function SWEP:PrimaryAttack()
         if self.MoneyBagThrown then return end
 
+	if SERVER then
+		net.Start("PlayerFiredSWEP")
+		net.Send(self:GetOwner())
+	end
+
         self:GetOwner():SetAnimation(PLAYER_ATTACK1)
         self:SetNextPrimaryFire(CurTime() + 30)
         self:SendViewModelAnim("bag_throw")
@@ -187,4 +192,5 @@ function SWEP:EmitSoundCustom(path, ...)
     if path ~= "weapons/weapon_empty.wav" then
         self:EmitSound(path, ...)
     end
+
 end
