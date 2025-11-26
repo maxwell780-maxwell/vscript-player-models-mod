@@ -1,7 +1,12 @@
 local TRANSITION_TIME = 1   -- duration to return from changed expression to normal
 local ANGRY_FACE_DURATION = 2   -- how long to hold the angry face
 local ANGRY_COOLDOWN = 2        -- cooldown before another angry face
-local HEAVY_MODEL = "models/vip_mobster/player/mobster.mdl"
+
+local MOBSTER_MODELS = {
+    ["models/vip_mobster/player/old/mobster.mdl"] = true,
+    ["models/vip_mobster/player/mobster_new.mdl"] = true
+}
+
 local TRANSITION_SPEED = 0.5
 local CHANCE_TO_CHANGE = 0.001 -- 0.1% chance per think
 local LOW_HEALTH_THRESHOLD = 0.5
@@ -17,6 +22,11 @@ local TIME_VARIATIONS = {
     { delay = 60, chance = 0.25 },   -- 1 minute, 25% chance
     { delay = 600, chance = 0.05 }   -- 10 minutes, 5% chance
 }
+
+local function IsMobsterModel(ply)
+    return MOBSTER_MODELS[string.lower(ply:GetModel())] == true
+end
+
 -- OH GOD I MADE IT HORRIBLE welp to bad :/ is just what i get for being a bad programer if garrys mod dont complain im not complaining
     -- Variables
     local nextAngryTime = 0
@@ -27,7 +37,7 @@ local TIME_VARIATIONS = {
 
     net.Receive("PlayerFiredSWEP", function()
         local ply = LocalPlayer()
-        if not IsValid(ply) or ply:GetModel() ~= HEAVY_MODEL then return end
+        if not IsValid(ply) or not IsMobsterModel(ply) then return end
         if CurTime() < nextAngryTime then return end -- cooldown
 
         angryState.active = true
@@ -37,7 +47,7 @@ local TIME_VARIATIONS = {
 
     hook.Add("Think", "MobsterFaceExpressionSWEP", function()
         local ply = LocalPlayer()
-        if not IsValid(ply) or ply:GetModel() ~= HEAVY_MODEL then return end
+        if not IsValid(ply) or not IsMobsterModel(ply) then return end
 
         local madID = ply:GetFlexIDByName("mad") or 6 -- change 6 if your flex ID differs
 
@@ -65,7 +75,7 @@ hook.Add("Think", "MobsterFaceExpressionstime", function()
     local ply = LocalPlayer()
     if not IsValid(ply) or not ply:Alive() then return end
     
-    if ply:GetModel() == HEAVY_MODEL then
+    if IsMobsterModel(ply) then
         ply:SetFlexScale(1)
         
         local idleFaceID = ply:GetFlexIDByName("idleface") or 0
@@ -98,8 +108,6 @@ hook.Add("Think", "MobsterFaceExpressionstime", function()
 
 -- THIS TOOK FOREVER but its worth the wait
 
-local ply = LocalPlayer()
-if not IsValid(ply) or not ply:Alive() then return end
 
 local health = ply:Health()
 local maxHealth = ply:GetMaxHealth()
