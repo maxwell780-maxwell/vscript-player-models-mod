@@ -3,7 +3,7 @@ if SERVER then
 end
 
 SWEP.PrintName = "Typewriter"
-SWEP.Author = "Code Copilot & maxwell"
+SWEP.Author = "Code Copilot & maxwell & chatgpt"
 SWEP.Instructions = "press primary fire to shoot duh hold H to inspect weapon press secondary fire to SHOVE"
 
 SWEP.Spawnable = false
@@ -145,7 +145,7 @@ function SWEP:PrimaryAttack()
     local damage = self.Primary.Damage
     if isCrit then damage = damage * 3 end
 
-    self:ShootBullet(damage, 1, 0.01)
+    self:ShootBullet(damage, 3, 0.01, isCrit)
     self:TakePrimaryAmmo(1)
 
 
@@ -331,24 +331,84 @@ if SERVER then
     end)
 end
 
-function SWEP:ShootBullet(damage, num_bullets, aimcone)
+-- SHOOT BULLETS 0.1 VERSION ITS A BETTER VERSION OF THE MOBSTERS WEAPONS THIS IS HOW YOU CAN MAKE TF2 BULLETS WORK IN GMOD THATS HOW ME AND CHATGPT DID IT
+
+function SWEP:ShootBullet(damage, num_bullets, aimcone, isCrit) 
     local owner = self:GetOwner()
-    local bullet = {}
+    if not IsValid(owner) then return end
 
-    bullet.Num       = 3  -- always fire 3 bullets
-    bullet.Src       = owner:GetShootPos()
-    bullet.Dir       = owner:GetAimVector()
+    local bulletSrc = owner:GetShootPos()
+    local aimDir = owner:GetAimVector()
 
-    -- small spread boost (adjust to taste)
-    bullet.Spread    = Vector(aimcone * 5.5, aimcone * 5.5, 0)
+    local bullets = num_bullets or 3
+    local spreadAmount = aimcone or 0.01
 
-    bullet.Tracer    = 1
-    bullet.TracerName= "Tracer"
-    bullet.Force     = damage * 0.5
-    bullet.Damage    = damage
-    bullet.AmmoType  = self.Primary.Ammo
+    local skin = owner:GetSkin() or 0
 
-    owner:FireBullets(bullet)
+    local tracerName
+    if skin == 0 then
+        tracerName = isCrit and "bullet_tracer_raygun_red_crit"
+                          or  "bullet_tracer_raygun_red"
+    elseif skin == 1 then
+        tracerName = isCrit and "bullet_tracer_raygun_blue_crit"
+                          or  "bullet_tracer_raygun_blue"
+    else
+        tracerName = "bullet_tracer_raygun_red" -- safety fallback
+    end
+	
+    -- PLEASE FIX LATER
+    local impactFX
+    if skin == 0 then
+        impactFX = "bullet_tracer_raygun_red_bits"
+    elseif skin == 1 then
+        impactFX = "bullet_tracer_raygun_blue_bits"
+    end
+
+
+
+    for i = 1, bullets do
+        -- Apply random spread using angles
+        local spreadAng = aimDir:Angle()
+        spreadAng:RotateAroundAxis(spreadAng:Up(), math.Rand(-spreadAmount, spreadAmount) * 360)
+        spreadAng:RotateAroundAxis(spreadAng:Right(), math.Rand(-spreadAmount, spreadAmount) * 360)
+        local spreadDir = spreadAng:Forward()
+
+        -- Trace for hit
+        local tr = util.TraceLine({
+            start = bulletSrc,
+            endpos = bulletSrc + spreadDir * 10000,
+            filter = owner
+        })
+
+        -- Spawn tracer particle
+        util.ParticleTracerEx(tracerName, bulletSrc, tr.HitPos, true, self:EntIndex(), 1)
+
+        -- Apply damage
+        if IsValid(tr.Entity) then
+            local dmg = DamageInfo()
+            dmg:SetAttacker(owner)
+            dmg:SetInflictor(self)
+            dmg:SetDamage(damage)
+            dmg:SetDamageForce(spreadDir * damage * 0.5)
+            dmg:SetDamagePosition(tr.HitPos)
+            dmg:SetDamageType(DMG_BULLET)
+            tr.Entity:TakeDamageInfo(dmg)
+        end
+
+-- PLEASE FIX LATER
+
+        if impactFX then
+            local effectdata = EffectData()
+            effectdata:SetOrigin(tr.HitPos)
+            effectdata:SetNormal(tr.HitNormal)
+            util.Effect(impactFX, effectdata, true, true)
+        end
+
+        -- Create bullet hole decal
+        if tr.HitWorld or IsValid(tr.Entity) then
+            util.Decal("Impact.Concrete", tr.HitPos + tr.HitNormal, tr.HitPos - tr.HitNormal)
+        end
+    end
     owner:MuzzleFlash()
     owner:SetAnimation(PLAYER_ATTACK1)
 end
@@ -400,4 +460,3 @@ end
      --   end
   --  end
 -- end
-
