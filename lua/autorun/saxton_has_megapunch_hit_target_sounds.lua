@@ -53,6 +53,8 @@ local punchVoiceLines = {
     }
 }
 
+local INTENSITY = 1.0 -- max flex weight
+
 -- Cooldown to prevent sound spam
 local playerCooldowns = {}
 local COOLDOWN_TIME = 0.5 -- Half second cooldown between sounds
@@ -286,13 +288,13 @@ if CLIENT then
                 flexWeight = flexWeight * fadeProgress
             end
             
-            -- Apply flex weight with increased intensity
-            local flexID = ply:GetFlexIDByName(FLEX_NAME)
-            if flexID then
-                -- Make lip movement more pronounced during the main part of the sound
-                local intensity = (currentTime < data.soundEndTime) and 1.2 or 1.0
-                ply:SetFlexWeight(flexID, math.min(flexWeight * intensity, 1.0))
-            end
+            -- fixed this rare bug idk how that got here
+			local flexID = ply:GetFlexIDByName(FLEX_NAME)
+
+			-- flexID MUST be a valid number >= 0
+			if flexID ~= nil and flexID >= 0 then
+			ply:SetFlexWeight(flexID, math.min(flexWeight * INTENSITY, 1.0)) -- i knew one day that it will break why have i not notice it idk i just found it
+			end
         end
     end)
     
