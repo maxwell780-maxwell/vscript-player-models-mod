@@ -356,16 +356,7 @@ function SWEP:ShootBullet(damage, num_bullets, aimcone, isCrit)
         tracerName = "bullet_tracer_raygun_red" -- safety fallback
     end
 	
-    -- PLEASE FIX LATER
-    local impactFX
-    if skin == 0 then
-        impactFX = "bullet_tracer_raygun_red_bits"
-    elseif skin == 1 then
-        impactFX = "bullet_tracer_raygun_blue_bits"
-    end
-
-
-
+	
     for i = 1, bullets do
         -- Apply random spread using angles
         local spreadAng = aimDir:Angle()
@@ -395,18 +386,14 @@ function SWEP:ShootBullet(damage, num_bullets, aimcone, isCrit)
             tr.Entity:TakeDamageInfo(dmg)
         end
 
--- PLEASE FIX LATER
 
-        if impactFX then
-            local effectdata = EffectData()
-            effectdata:SetOrigin(tr.HitPos)
-            effectdata:SetNormal(tr.HitNormal)
-            util.Effect(impactFX, effectdata, true, true)
-        end
-
-        -- Create bullet hole decal
-        if tr.HitWorld or IsValid(tr.Entity) then
-            util.Decal("Impact.Concrete", tr.HitPos + tr.HitNormal, tr.HitPos - tr.HitNormal)
+		-- ✅ Decal (also world-only now)
+		if tr.HitWorld then
+			util.Decal(
+			"Impact.Concrete",
+			tr.HitPos + tr.HitNormal,
+			tr.HitPos - tr.HitNormal
+			)
         end
     end
     owner:MuzzleFlash()
