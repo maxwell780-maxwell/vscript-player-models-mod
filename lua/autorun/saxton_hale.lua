@@ -24,16 +24,12 @@ player_manager.AddValidHands("!tf_hell_saxton", "models/vsh/weapons/c_models/c_h
 player_manager.AddValidModel( "!tf_MECHA_saxton",			"models/vsh/player/mecha_hale.mdl" )
 player_manager.AddValidHands( "!tf_MECHA_saxton",			"models/vsh/weapons/c_models/c_mecha_hale_arms.mdl",			0, "0000000" )
 
-player_manager.AddValidModel( "!tf_VIP",			"models/vip/player/julius/julius.mdl" )
-player_manager.AddValidHands( "!tf_VIP",			"models/vip/weapons/c_models/c_julius_arms.mdl",			0, "0000000" ) 
 
 player_manager.AddValidModel( "!tf_hatman",			"models/bots/headless_hatman.mdl" )
 player_manager.AddValidHands( "!tf_hatman",			"models/weapons/c_models/c_demo_arms.mdl",			0, "0000000" )
 
 player_manager.AddValidModel( "!tf_old_saxton",			"models/saxton_hale_3.mdl" )
 player_manager.AddValidHands( "!tf_old_saxton",			"models/weapons/c_models/c_saxton_arms.mdl",			0, "0000000" )
-
-list.Set( "PlayerOptionsAnimations", "!tf_VIP", { "taunt_replay", "crouch_melee", "taunt_russian", "taunt_highfivesuccessfull", "layer_taunt_rps_scissors_lose", "taunt_conga", "taunt03", "taunt_aerobic_a", "taunt_aerobic_b", "taunt_highfivesuccess", "stand_melee", "ragdollspawn", "stand_loser", "layer_taunt_rps_rock_win", "layer_taunt_rps_paper_lose", "layer_taunt_rps_rock_lose", "layer_taunt_rps_scissors_win", "layer_taunt_rps_paper_win", "layer_taunt_rps_rock_win" } )
 
 list.Set( "PlayerOptionsAnimations", "!tf_old_saxton", { "selectionmenu_idle", "selectionmenu_anim01", "selectionmenu_startpose", "taunt_highfivesuccessfull", "taunt02", "taunt_laugh", "taunt_yeti", "taunt_headbutt_success", "taunt_aerobic_b", "taunt_coffee", "stand_melee", "ragdollspawn", "stand_loser", "primary_death_headshot", "primary_death_backstab", "aimup", "crouch_melee", "taunt_flip_success_receiver", "taunt_flip_success_initiator" } )
 
@@ -72,7 +68,6 @@ hook.Add("TranslateActivity", "CustomAnimations", function(pl, act)
        pl:GetModel() == "models/bots/headless_hatman.mdl" or 
        pl:GetModel() == "models/vsh/player/winter/saxton_hale.mdl" or 
        pl:GetModel() == "models/player/saxton_hale.mdl" or 
-       pl:GetModel() == "models/vip/player/julius/julius.mdl" or 
        pl:GetModel() == "models/vsh/player/mecha_hale.mdl" or 
        pl:GetModel() == "models/subzero_saxton_hale.mdl" or 
        pl:GetModel() == "models/vsh/player/hell_hale.mdl" then
@@ -249,7 +244,6 @@ hook.Add("UpdateAnimation", "SaxtonHaleAnimations", function(pl, velocity, maxse
     or pl:GetModel() == "models/saxton_hale_3.mdl"
     or pl:GetModel() == "models/bots/headless_hatman.mdl"
     or pl:GetModel() == "models/vsh/player/winter/saxton_hale.mdl"
-	or pl:GetModel() == "models/vip/player/julius/julius.mdl"
     or pl:GetModel() == "models/vsh/player/mecha_hale.mdl"
     or pl:GetModel() == "models/subzero_saxton_hale.mdl" 
     or pl:GetModel() == "models/vsh/player/hell_hale.mdl" then
@@ -288,3 +282,4 @@ hook.Add("UpdateAnimation", "SaxtonHaleAnimations", function(pl, velocity, maxse
         return GAMEMODE:UpdateAnimation(pl, velocity, maxseqgroundspeed)
     end
 end)
+
