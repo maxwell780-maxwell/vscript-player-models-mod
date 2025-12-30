@@ -7,6 +7,7 @@ local playerModelList = {
     "models/vsh/player/santa_hale.mdl",
     "models/vsh/player/hell_hale.mdl",
     "models/vsh/player/mecha_hale.mdl",
+    "models/player/clone/doplaganger/blue_clolored_tf2_vscript_saxton_hale.mdl",
     "models/subzero_saxton_hale.mdl",
     "models/player/hell_hale.mdl",
     "models/vsh/player/winter/saxton_hale.mdl"
@@ -30,99 +31,6 @@ local gestureAnimations = {
     ["RAGE"] = "vsh_rage_attack"
 }
 
-local juliusSounds = {
-    ["HELP!"] = {
-        "mvm/julius_v7/julius_medic01.mp3",
-        "mvm/julius_v7/julius_medic02.mp3",
-        "mvm/julius_v7/julius_medic03.mp3",
-        "mvm/julius_v7/julius_medic04.mp3",
-        "mvm/julius_v7/julius_medic05.mp3",
-        "mvm/julius_v7/julius_medic06.mp3",
-        "mvm/julius_v7/julius_medic07.mp3",
-        "mvm/julius_v7/julius_medic08.mp3",
-        "mvm/julius_v7/julius_medic09.mp3",
-        "mvm/julius_v7/julius_medic10.mp3",
-        "mvm/julius_v7/julius_medic11.mp3",
-        "mvm/julius_v7/julius_medic12.mp3",
-        "mvm/julius_v7/julius_medic13.mp3",
-        "mvm/julius_v7/julius_medic14.mp3",
-        "mvm/julius_v7/julius_medic15.mp3",
-        "mvm/julius_v7/julius_medic16.mp3",
-        "mvm/julius_v7/julius_medic17.mp3",
-        "mvm/julius_v7/julius_medic18.mp3",
-        "mvm/julius_v7/julius_medic19.mp3",
-        "mvm/julius_v7/julius_medic20.mp3",
-        "mvm/julius_v7/julius_helpme01.mp3",
-        "mvm/julius_v7/julius_helpme02.mp3",
-        "mvm/julius_v7/julius_helpme03.mp3",
-        "mvm/julius_v7/julius_helpme04.mp3",
-        "mvm/julius_v7/julius_helpme05.mp3"
-
-    },
-    ["GO!"] = {
-        "mvm/julius_v7/julius_moveup01.mp3",
-        "mvm/julius_v7/julius_moveup02.mp3",
-        "mvm/julius_v7/julius_moveup03.mp3",
-        "mvm/julius_v7/julius_moveup04.mp3",
-        "mvm/julius_v7/julius_moveup05.mp3",
-        "mvm/julius_v7/julius_moveup06.mp3",
-        "mvm/julius_v7/julius_moveup07.mp3",
-        "mvm/julius_v7/julius_moveup08.mp3",
-        "mvm/julius_v7/julius_moveup09.mp3",
-        "mvm/julius_v7/julius_go01.mp3",
-        "mvm/julius_v7/julius_go02.mp3",
-        "mvm/julius_v7/julius_go03.mp3",
-        "mvm/julius_v7/julius_go04.mp3",
-        "mvm/julius_v7/julius_go05.mp3",
-        "mvm/julius_v7/julius_go06.mp3",
-        "mvm/julius_v7/julius_go07.mp3",
-        "mvm/julius_v7/julius_go08.mp3",
-        "mvm/julius_v7/julius_go09.mp3",
-        "mvm/julius_v7/julius_go10.mp3"
-    },
-    ["CHEER"] = {
-        "mvm/julius_v7/julius_battlecry01.mp3",
-        "mvm/julius_v7/julius_battlecry02.mp3",
-        "mvm/julius_v7/julius_battlecry03.mp3",
-        "mvm/julius_v7/julius_battlecry04.mp3",
-        "mvm/julius_v7/julius_battlecry05.mp3",
-        "mvm/julius_v7/julius_battlecry06.mp3",
-        "mvm/julius_v7/julius_battlecry07.mp3",
-        "mvm/julius_v7/julius_blooper01.mp3"
-    },
-    ["THANKS"] = {
-        "mvm/julius_v7/julius_niceshot01.mp3",
-        "mvm/julius_v7/julius_niceshot02.mp3",
-        "mvm/julius_v7/julius_niceshot03.mp3",
-        "mvm/julius_v7/julius_niceshot04.mp3",
-        "mvm/julius_v7/julius_niceshot05.mp3",
-        "mvm/julius_v7/julius_thanks01.mp3",
-        "mvm/julius_v7/julius_thanks02.mp3",
-        "mvm/julius_v7/julius_thanks03.mp3",
-        "mvm/julius_v7/julius_thanks04.mp3",
-        "mvm/julius_v7/julius_thanks05.mp3",
-        "mvm/julius_v7/julius_thanks06.mp3",
-        "mvm/julius_v7/julius_thanks07.mp3",
-        "mvm/julius_v7/julius_thanks08.mp3",
-        "mvm/julius_v7/julius_thanks09.mp3",
-        "mvm/julius_v7/julius_goodjob01.mp3",
-        "mvm/julius_v7/julius_goodjob02.mp3",
-        "mvm/julius_v7/julius_goodjob03.mp3",
-        "mvm/julius_v7/julius_goodjob04.mp3",
-        "mvm/julius_v7/julius_goodjob05.mp3",
-        "mvm/julius_v7/julius_goodjob06.mp3",
-        "mvm/julius_v7/julius_goodjob07.mp3"
-    }
-}
-
-local juliusMeleeDareSounds = {
-    "mvm/julius_v7/julius_meleedare01.mp3",
-    "mvm/julius_v7/julius_meleedare02.mp3",
-    "mvm/julius_v7/julius_meleedare03.mp3",
-    "mvm/julius_v7/julius_meleedare04.mp3",
-    "mvm/julius_v7/julius_meleedare05.mp3"
-}
-
 local flexTransitions = {
     current = 0,
     target = 0,
@@ -135,17 +43,6 @@ local flexTransitions = {
     saxtonRageFlex = false
 }
 
-local juliusFlexes = {
-    ["HELP!"] = "painBigUpper",
-    ["GO!"] = {"madUpper", "painSmallUpper"},
-    ["THANKS"] = "Cocky",
-    ["CHEER"] = "AggresiveClosed"
-}
-
-local juliusResetFlexes = {
-    "CloseLidUp",
-    "CloseLidLo"
-}
 
 local lastKnownModel = nil
 local uiPanel = nil
@@ -156,7 +53,6 @@ local isGesturePlaying = false
 local gestureEndTime = 0
 local GetEntityInFront
 local IsHostileEntity
-local PlayJuliusSound
 local SmoothlySetFlex
 local HandleCheerFlexTransition
 local PlayGesture
@@ -269,62 +165,7 @@ local HandleSaxtonRageFlex = function(ply)
     end
 end
 
-local HandleCheerFlexTransition = function(ply)
-    local currentTime = CurTime()
-    
-    -- Only process if the last gesture was CHEER
-    if flexTransitions.lastGesture != "CHEER" then return end
-    
-    -- If we're in a cheer sequence and AggresiveClosed is done
-    if flexTransitions.cheerSequence and flexTransitions.currentFlex == "AggresiveClosed" and flexTransitions.current <= 0.1 then
-        -- Start the Aggressive flex
-        flexTransitions.currentFlex = "Aggressive"
-        flexTransitions.target = 1
-        flexTransitions.aggressiveTimer = currentTime + 0.5 -- Hold for half a second
-    end
-    
-    -- If Aggressive has been at 1 for the timer duration
-    if flexTransitions.currentFlex == "Aggressive" and flexTransitions.current >= 0.9 and currentTime > flexTransitions.aggressiveTimer then
-        flexTransitions.target = 0
-    end
-    
-    -- If Aggressive is done, end the sequence
-    if flexTransitions.currentFlex == "Aggressive" and flexTransitions.current <= 0.1 then
-        flexTransitions.cheerSequence = false
-        flexTransitions.lastGesture = nil
-    end
-    
-    -- Always ensure eyelids are reset during cheer sequence
-    ResetEyeLids(ply)
-end
 
-
-IsHostileEntity = function(ent)
-    if not IsValid(ent) then return false end
-    if ent.IsNextbot then return true end
-    if ent:IsNPC() then return true end
-    if ent:IsPlayer() and ent:Team() != LocalPlayer():Team() then return true end
-    return false
-end
-
-PlayJuliusSound = function(gestureType)
-    if LocalPlayer():GetModel() != "models/vip/player/julius/julius.mdl" then return end
-
-    if gestureType == "CHEER" then
-        local entityInFront = GetEntityInFront()
-        if IsHostileEntity(entityInFront) then
-            local randomDareSound = juliusMeleeDareSounds[math.random(#juliusMeleeDareSounds)]
-            surface.PlaySound(randomDareSound)
-            return
-        end
-    end
-
-    local soundList = juliusSounds[gestureType]
-    if soundList then
-        local randomSound = soundList[math.random(#soundList)]
-        surface.PlaySound(randomSound)
-    end
-end 
 
 local PlayGesture = function(ply, gestureName)-- PLEASE NEVER agian will i do this
     if not IsValid(ply) or isGesturePlaying or not ply:Alive() then return end
@@ -335,30 +176,11 @@ local PlayGesture = function(ply, gestureName)-- PLEASE NEVER agian will i do th
         lastPlayedGesture = gestureName
         isGesturePlaying = true
         gestureEndTime = CurTime() + ply:SequenceDuration(gestureSeq)
-        PlayJuliusSound(gestureName)
 
-        -- Handle flex animations for Julius
-        if ply:GetModel() == "models/vip/player/julius/julius.mdl" then
-            -- Always reset eyelids first
-            ResetEyeLids(ply)
-            
-            local flexName = juliusFlexes[gestureName]
             
             -- Store the current gesture
             flexTransitions.lastGesture = gestureName
             
-            -- Special handling for CHEER
-            if gestureName == "CHEER" then
-                flexTransitions.cheerSequence = true
-                SmoothlySetFlex(ply, "AggresiveClosed", 1)
-            elseif type(flexName) == "table" then
-                for _, flex in ipairs(flexName) do
-                    SmoothlySetFlex(ply, flex, 1)
-                end
-            elseif flexName then
-                SmoothlySetFlex(ply, flexName, 1)
-            end
-        end
         
         -- Handle RAGE flex for Saxton Hale models
         if IsHaleModel(ply:GetModel()) and gestureName == "RAGE" then
@@ -371,28 +193,10 @@ end
 hook.Add("Think", "CheckGestureCompletion", function()
     local ply = LocalPlayer()
     if not IsValid(ply) then return end
-    
+
     if isGesturePlaying and CurTime() > gestureEndTime then
         isGesturePlaying = false
-        
-        -- Handle Julius model
-        if ply:GetModel() == "models/vip/player/julius/julius.mdl" then
-            -- For CHEER, only reset AggresiveClosed to trigger the sequence
-            if flexTransitions.lastGesture == "CHEER" then
-                SmoothlySetFlex(ply, "AggresiveClosed", 0)
-            else
-                -- Reset all other flexes normally
-                local flexName = juliusFlexes[flexTransitions.lastGesture]
-                if type(flexName) == "table" then
-                    for _, flex in ipairs(flexName) do
-                        SmoothlySetFlex(ply, flex, 0)
-                    end
-                elseif flexName then
-                    SmoothlySetFlex(ply, flexName, 0)
-                end
-            end
-        end
-        
+
         -- Reset Saxton Hale RAGE flex
         if IsHaleModel(ply:GetModel()) then
             flexTransitions.saxtonRageFlex = false
@@ -417,49 +221,38 @@ local function IsHaleModel(model)
     return table.HasValue(playerModelList, model)
 end
 
-local function CreateGestureButtons(panel, ply, startX, startY, buttonSize, padding)
-    -- Base gestures that everyone gets
-    local gestures = {"GO!", "CHEER", "HELP!", "THANKS"}
-    
-    -- Create the basic gesture buttons first
-    for i, text in ipairs(gestures) do
-        local col = (i - 1) % 4
-        local row = math.floor((i - 1) / 4)
-        
-        local button = vgui.Create("DButton", panel)
-        button:SetText(text)
-        button:SetSize(buttonSize, buttonSize)
-        button:SetPos(startX + col * (buttonSize + padding), startY + row * (buttonSize + padding))
-        button:SetFont("Trebuchet24")
-        button:SetTextColor(Color(255, 255, 255))
-        button.OnCursorEntered = function()
-            currentHoveredText = text
-        end
-        button.OnCursorExited = function()
-            currentHoveredText = nil
-        end
-        button.DoClick = function()
-            PlayGesture(ply, text)
+local function CreateGestureButtons(panel, ply)
+    local gestures = { "GO!", "CHEER", "HELP!", "THANKS" }
+
+    local size = 100
+    local padding = 10
+    local startX = ScrW() / 2 - 2 * (size + padding)
+    local startY = ScrH() / 2 - (size + padding)
+
+    for i, g in ipairs(gestures) do
+        local btn = vgui.Create("DButton", panel)
+        btn:SetSize(size, size)
+        btn:SetPos(startX + (i - 1) * (size + padding), startY)
+        btn:SetText(g)
+        btn:SetFont("Trebuchet24")
+        btn:SetTextColor(color_white)
+
+        btn.DoClick = function()
+            PlayGesture(ply, g)
             panel:SetVisible(false)
             gui.EnableScreenClicker(false)
         end
     end
-    
-    -- Add RAGE button only for Hale models
+
     if IsHaleModel(ply:GetModel()) then
-        local rageButton = vgui.Create("DButton", panel)
-        rageButton:SetText("RAGE")
-        rageButton:SetSize(buttonSize, buttonSize)
-        rageButton:SetPos(startX + 4 * (buttonSize + padding), startY) -- Position after other buttons
-        rageButton:SetFont("Trebuchet24")
-        rageButton:SetTextColor(Color(255, 255, 255))
-        rageButton.OnCursorEntered = function()
-            currentHoveredText = "RAGE"
-        end
-        rageButton.OnCursorExited = function()
-            currentHoveredText = nil
-        end
-        rageButton.DoClick = function()
+        local rage = vgui.Create("DButton", panel)
+        rage:SetSize(size, size)
+        rage:SetPos(startX + 4 * (size + padding), startY)
+        rage:SetText("RAGE")
+        rage:SetFont("Trebuchet24")
+        rage:SetTextColor(color_white)
+
+        rage.DoClick = function()
             PlayGesture(ply, "RAGE")
             panel:SetVisible(false)
             gui.EnableScreenClicker(false)
@@ -510,7 +303,7 @@ hook.Add("Think", "CheckPlayerModelAndInput", function()
 	end
     
     if input.IsKeyDown(gestureKey) and not isKeyHeld then
-        if IsHaleModel(ply:GetModel()) or ply:GetModel() == "models/vip/player/julius/julius.mdl" then
+        if IsHaleModel(ply:GetModel()) then
             isKeyHeld = true
             gui.EnableScreenClicker(true)
             
@@ -542,6 +335,21 @@ hook.Add("Think", "CheckPlayerModelAndInput", function()
     end
 end)
 
+hook.Add("Think", "SaxtonRageFlexThink", function()
+    local ply = LocalPlayer()
+    if not IsValid(ply) or not ply:Alive() then return end
+    if not IsHaleModel(ply:GetModel()) then return end
+
+    local flexID = ply:GetFlexIDByName("actionfire02")
+    if not flexID then return end
+
+    local delta = FrameTime() * rageFlexSpeed
+    local current = ply:GetFlexWeight(flexID)
+
+    local target = flexTransitions.saxtonRageFlex and 1 or 0
+    ply:SetFlexWeight(flexID, Lerp(delta, current, target))
+end)
+
 hook.Add("PlayerBindPress", "HideUIOnRelease", function(ply, bind, pressed)
     if bind == "+use" and not pressed then
         if uiPanel then
@@ -552,36 +360,6 @@ hook.Add("PlayerBindPress", "HideUIOnRelease", function(ply, bind, pressed)
     end
 end)
 
-hook.Add("Think", "JuliusFlexTransitions", function()
-    local ply = LocalPlayer()
-    if not IsValid(ply) then return end
-    
-    -- Handle Julius model flexes
-    if ply:GetModel() == "models/vip/player/julius/julius.mdl" then
-        -- Always ensure eyelids are reset
-        ResetEyeLids(ply)
-
-        local deltaTime = FrameTime() * flexTransitions.speed
-        flexTransitions.current = Lerp(deltaTime, flexTransitions.current, flexTransitions.target)
-
-        if flexTransitions.currentFlex then
-            local flexID = ply:GetFlexIDByName(flexTransitions.currentFlex)
-            if flexID then
-                ply:SetFlexWeight(flexID, flexTransitions.current)
-            end
-            
-            -- Handle the cheer sequence if active
-            if flexTransitions.cheerSequence then
-                HandleCheerFlexTransition(ply)
-            end
-        end
-    end
-    
-    -- Handle Saxton Hale RAGE flex
-    if IsHaleModel(ply:GetModel()) then
-        HandleSaxtonRageFlex(ply)
-    end
-end)
 
 concommand.Add("maxwell_playgestures_help", function()
     chat.AddText(Color(255, 200, 0), "Gesture System Help:")
